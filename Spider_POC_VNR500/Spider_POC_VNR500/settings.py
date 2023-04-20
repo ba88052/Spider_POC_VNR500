@@ -7,10 +7,7 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 import os
-from datetime import datetime
 
-today = datetime.today()
-today = today.strftime('%-m/%-d')
 
 BOT_NAME = 'Spider_POC_VNR500'
 
@@ -43,10 +40,8 @@ LOG_LEVEL = "INFO"  #特別注意這邊一定要大寫
 ROBOTSTXT_OBEY = True
 
 #BQ設定
-GCP_PROJECT_ID = 'spider-poc'
-BQ_DATASET_ID = 'spider_poc_vnr500'
-BQ_TABLE_ID = f'company_info_{today}'
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "spider-poc-gcp-key.json"
+GCP_PROJECT_ID = 'cdcda-lab-377808'
+BQ_DATASET_ID = 'SAM_LAB'
 ITEM_PIPELINES = {'Spider_POC_VNR500.pipelines.BigQueryPipeline': 1}
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)

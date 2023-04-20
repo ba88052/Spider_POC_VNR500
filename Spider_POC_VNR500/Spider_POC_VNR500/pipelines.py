@@ -37,7 +37,7 @@ class BigQueryPipeline:
             print("create", dataset_ref)
 
         # Create table if not exists
-        self.table_ref = dataset_ref.table(self.table_id)
+        self.table_ref = dataset_ref.table(spider.bq_table_name)
         try:
             self.client.get_table(self.table_ref)
             print(self.table_ref, "already exist")

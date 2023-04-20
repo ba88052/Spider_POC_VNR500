@@ -2,17 +2,25 @@ import scrapy
 from bs4 import BeautifulSoup
 import json
 from Spider_POC_VNR500.items import SpiderPocVnr500Item
+from datetime import datetime
+
+today = datetime.today()
+this_year = today.year
+today = today.strftime('%-m/%-d')
 
 
 class VnrCompanyInfoSpider(scrapy.Spider):
     name = 'vnr500_company_info'
+    BQ_TABLE_ID = f'company_info_{this_year}_{today}'
+    
+    
     #---------------設定爬取的網站，可調整year的年份，可從2008-2022----------------#
     def start_requests(self):
         for chart_id in [1, 2]:
-            for year in range(2022, 2023):
-                url = f'https://vnr500.com.vn/Charts/Index?chartId={chart_id}&year={year}'
-                yield scrapy.Request(url, callback=self.parse, cb_kwargs={'chart_id': chart_id, 'year': year})
+            url = f'https://vnr500.com.vn/Charts/Index?chartId={chart_id}&year={this_year}'
+            yield scrapy.Request(url, callback=self.parse, cb_kwargs={'chart_id': chart_id, 'year': this_year})
 
+                
     #---------------用以找到所有公司的連結，並傳給parse_data----------------#
     def parse(self, response, chart_id, year):
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -24,6 +32,7 @@ class VnrCompanyInfoSpider(scrapy.Spider):
             company_link = company.get('href')
             if elem:
                 yield scrapy.Request(url = 'https://vnr500.com.vn' + company_link, callback= self.parse_data, cb_kwargs={'chart_id': chart_id, 'year': year})
+                
 
     #---------------用以從每個公司的連結中提取資料----------------#
     def parse_data(self, response, chart_id, year):
